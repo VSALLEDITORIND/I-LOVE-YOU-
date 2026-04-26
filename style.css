@@ -1,17 +1,49 @@
-/* আগের স্টাইল ঠিক থাকবে, শুধু এগুলো নিচে যোগ করুন */
+/* আপনার দেওয়া ফটো কন্টেইনার */
 #photoContainer {
-    position: absolute; top: 45%; left: 50%;
+    position: absolute; 
+    top: 45%; 
+    left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    width: 250px; height: 250px;
+    width: 250px; 
+    height: 250px;
     border-radius: 50%;
     overflow: hidden;
     border: 5px solid #ff4d6d;
     box-shadow: 0 0 30px #ff4d6d;
     z-index: 50;
-    transition: transform 1.5s ease-out;
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* একটু বাউন্সি ইফেক্ট */
 }
 
-#rituPhoto { width: 100%; height: 100%; object-fit: cover; }
+#rituPhoto { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
 
-/* যখন ছবিটা দেখাবে */
-#photoContainer.show { transform: translate(-50%, -50%) scale(1); }
+/* যখন ছবিটা দেখাবে তখন এই এনিমেশনগুলো কাজ করবে */
+#photoContainer.show { 
+    transform: translate(-50%, -50%) scale(1); 
+    animation: heartBeat 1.5s infinite 1.5s; /* ছবি আসার পর হার্টবিট শুরু হবে */
+}
+
+/* হার্টবিট এনিমেশন লজিক */
+@keyframes heartBeat {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    15% { transform: translate(-50%, -50%) scale(1.08); }
+    30% { transform: translate(-50%, -50%) scale(1); }
+    45% { transform: translate(-50%, -50%) scale(1.08); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* মেসেজ বক্সের স্টাইল (যদি আগে না থাকে) */
+#mainMessage {
+    position: absolute;
+    top: 75%;
+    width: 100%;
+    text-align: center;
+    color: #ff4d6d;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 15px #ff0000;
+    z-index: 60;
+}
