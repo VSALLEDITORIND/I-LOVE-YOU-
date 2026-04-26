@@ -1,40 +1,67 @@
-// আপনার আগের script.js এর ভেতর নিচের অংশগুলো আপডেট করুন
-
-const photoContainer = document.getElementById('photoContainer');
+const canvas = document.getElementById('heartCanvas');
+const ctx = canvas.getContext('2d');
 const startBtn = document.getElementById('startBtn');
+const overlay = document.getElementById('startOverlay');
+const song = document.getElementById('mySong');
+const photoContainer = document.getElementById('photoContainer');
 
-// ভয়েস মেসেজ ফাংশন (আপনার নাম ধরে ডাকবে)
+let width, height, points = [];
+
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function initHeart() {
+    for (let i = 0; i < 100; i++) {
+        points.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            R: 2.5,
+            f: "hsla(0, 100%, 50%, 0.8)"
+        });
+    }
+}
+
 function speak(text) {
     const msg = new SpeechSynthesisUtterance();
     msg.text = text;
-    msg.lang = 'bn-BD'; // বাংলা ভয়েস
+    msg.lang = 'bn-BD';
     window.speechSynthesis.speak(msg);
+}
+
+function animate() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.fillRect(0, 0, width, height);
+    points.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.fillStyle = p.f;
+        ctx.arc(p.x, p.y, p.R, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    requestAnimationFrame(animate);
 }
 
 startBtn.addEventListener('click', () => {
     overlay.style.display = 'none';
+    speak("স্বাগতম বস এনাফুল! দেখ তোমার জন্য কি অপেক্ষা করছে।");
     
-    // ১. আপনার নাম ধরে ওয়েলকাম (এখানে আপনার নাম বসিয়ে নিন)
-    speak("স্বাগতম, [আপনার নাম]! দেখ তোমার জন্য কি অপেক্ষা করছে।");
-
     setTimeout(() => {
-        song.play();
+        song.play().catch(() => console.log("Audio play blocked"));
         initHeart();
         animate();
-        setInterval(createHeartRain, 400);
-
-        // ২. চারপাশ থেকে লাভ এসে মিডল পয়েন্ট তৈরি হওয়া (৫ সেকেন্ড পর)
+        
         setTimeout(() => {
             photoContainer.classList.add('show');
-            speak("আই লাভ ইউ ঋতু"); // ভয়েস বলবে আই লাভ ইউ ঋতু
-            
-            // ৩. টাইপিং মেসেজ
-            typeEffect(document.getElementById('mainMessage'), "আই লাভ ইউ ঋতু", 150, () => {
-                setTimeout(() => {
-                    typeEffect(document.getElementById('subMessage'), "তুমি আমার জীবনের শ্রেষ্ঠ উপহার...", 100);
-                }, 1000);
-            });
-        }, 5000);
-        
-    }, 2000);
+            speak("আই লাভ ইউ ঋতু");
+            document.getElementById('mainMessage').innerText = "আই লাভ ইউ ঋতু";
+        }, 3000);
+    }, 1000);
 });
